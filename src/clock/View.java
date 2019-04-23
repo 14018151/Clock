@@ -1,13 +1,17 @@
 package clock;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
 
+
 public class View implements Observer {
     
     ClockPanel panel;
+    JButton button;
     
     public View(Model model) {
         JFrame frame = new JFrame();
@@ -28,20 +32,38 @@ public class View implements Observer {
         
         Container pane = frame.getContentPane();
         
-        JButton button = new JButton("Button 1 (PAGE_START)");
+        button = new JButton("Button 1 (PAGE_START)");
         pane.add(button, BorderLayout.PAGE_START);
          
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
          
-        button = new JButton("Button 3 (LINE_START)");
+        button = new JButton("Add Alarm");
         pane.add(button, BorderLayout.LINE_START);
-         
+        
+        
+        //https://www.geeksforgeeks.org/jradiobutton-java-swing/
+        // Adding Listener to JButton. 
+        button.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e) 
+            {                 
+                System.out.println("Testing Add");
+            } 
+        }); 
+        
+        
         button = new JButton("Long-Named Button 4 (PAGE_END)");
         pane.add(button, BorderLayout.PAGE_END);
          
-        button = new JButton("5 (LINE_END)");
+        button = new JButton("View Alarms");
         pane.add(button, BorderLayout.LINE_END);
+        
+        button.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e) 
+            {                 
+                System.out.println("Testing View");
+            } 
+        }); 
         
         // End of borderlayout code
         
