@@ -43,14 +43,13 @@ public class View implements Observer {
         
         
         //https://www.geeksforgeeks.org/jradiobutton-java-swing/
-        // Adding Listener to JButton. 
+        // Adding Listener to JButton for adding alarms. 
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {                 
                 System.out.println("Testing Add");
             } 
-        }); 
-        
+        });
         
         button = new JButton("Long-Named Button 4 (PAGE_END)");
         pane.add(button, BorderLayout.PAGE_END);
@@ -65,8 +64,8 @@ public class View implements Observer {
             } 
         }); 
         
-        // End of borderlayout code
         
+        // End of borderlayout code
         frame.pack();
         frame.setVisible(true);
     }
