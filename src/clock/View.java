@@ -51,11 +51,11 @@ public class View implements Observer {
         pane.add(button, BorderLayout.LINE_START);
         
         //https://www.geeksforgeeks.org/jradiobutton-java-swing/
+        //https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
         // Adding Listener to JButton for adding alarms. 
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
-            {
-        
+            {                
                 JTextField hours = new JTextField(2);
                 JTextField minutes = new JTextField(2);
                 JTextField seconds = new JTextField(2);
@@ -71,12 +71,29 @@ public class View implements Observer {
                 alarmPanel.add(seconds);
 
                 int result = JOptionPane.showConfirmDialog(null, alarmPanel, "Enter an alarm time", JOptionPane.OK_CANCEL_OPTION);
-                
-                String alarmInput = hours.getText()+":"+minutes.getText()+":"+seconds.getText();
+                                
+                try {
+                    int hoursint = Integer.parseInt(hours.getText());
+                    int minutesint = Integer.parseInt(minutes.getText());
+                    int secondsint = Integer.parseInt(seconds.getText());
+                    
+                    if(hoursint > 23 || hoursint < 00){
+                        JOptionPane.showMessageDialog(frame, "24 hours in a day", "Error", JOptionPane.WARNING_MESSAGE);
+                    }else if(minutesint > 59 || hoursint < 00){
+                        JOptionPane.showMessageDialog(frame, "60 minutes in an hour", "Error", JOptionPane.WARNING_MESSAGE);
+                    }else if(secondsint > 59 || hoursint < 00){
+                        JOptionPane.showMessageDialog(frame, "60 seconds in a minute", "Error", JOptionPane.WARNING_MESSAGE);
+                    }else{
+                        String alarmInput = hours.getText() + ":" + minutes.getText() + ":" + seconds.getText();
 
-                System.out.println(alarmInput);
+                        model.addAlarm(alarmInput);
+                    }
+                    
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Alarm must be formatted as 00:00:00", "Error", JOptionPane.WARNING_MESSAGE);
+                }
                 
-                model.addAlarm(alarmInput);
+               
             } 
         });
         
