@@ -3,11 +3,10 @@ package clock;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
-import java.util.Random;
+
 
 
 public class View implements Observer {
@@ -56,13 +55,28 @@ public class View implements Observer {
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {
-                String hour = (String)JOptionPane.showInputDialog(frame, "Add an alarm:", null );
-                String minute  = (String)JOptionPane.showInputDialog(frame, "Add an alarm:", null );
-                String second  = (String)JOptionPane.showInputDialog(frame, "Add an alarm:", null );
+        
+                JTextField hours = new JTextField(2);
+                JTextField minutes = new JTextField(2);
+                JTextField seconds = new JTextField(2);
                 
-                System.out.println(hour+":"+minute+":"+second);
+                JPanel alarmPanel = new JPanel();
+                alarmPanel.add(new JLabel("Hour:"));
+                alarmPanel.add(hours);
+                alarmPanel.add(Box.createHorizontalStrut(15)); // a spacer
+                alarmPanel.add(new JLabel("Minutes:"));
+                alarmPanel.add(minutes);
+                alarmPanel.add(Box.createHorizontalStrut(15)); // a spacer
+                alarmPanel.add(new JLabel("Seconds:"));
+                alarmPanel.add(seconds);
+
+                int result = JOptionPane.showConfirmDialog(null, alarmPanel, "Enter an alarm time", JOptionPane.OK_CANCEL_OPTION);
                 
-                model.addAlarm();
+                String alarmInput = hours.getText()+":"+minutes.getText()+":"+seconds.getText();
+
+                System.out.println(alarmInput);
+                
+                model.addAlarm(alarmInput);
             } 
         });
         

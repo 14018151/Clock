@@ -42,10 +42,8 @@ public class Model extends Observable {
         System.out.println(alarm.head());
     }
 
-    void addAlarm() {
-        
-    
-        alarm.add("18:53:00");
+    void addAlarm(String str) {
+        alarm.add(str);
     }
 
     void removeHead() {
