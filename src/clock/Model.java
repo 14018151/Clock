@@ -19,21 +19,20 @@ public class Model extends Observable {
     
     public void update() {
         Calendar date = Calendar.getInstance();
-        hour = date.get(Calendar.HOUR);
+        hour = date.get(Calendar.HOUR_OF_DAY);
         minute = date.get(Calendar.MINUTE);
         oldSecond = second;
         second = date.get(Calendar.SECOND);
         if (oldSecond != second) {
             setChanged();
             notifyObservers();
-        }
-        
-        String time = hour +":"+minute+":"+second;
-        
-        if(!alarm.isEmpty()){
-            if(alarm.head().equals(time)){
-            alarm.pop();
-                System.out.println("test");
+            
+            String time = hour +":"+minute+":"+second;
+            if(!alarm.isEmpty()){
+                if(alarm.head().equals(time)){
+                    alarm.pop();
+                    System.out.println(time);
+                }
             }
         }
     }
