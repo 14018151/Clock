@@ -3,6 +3,7 @@ package clock;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
@@ -14,10 +15,9 @@ public class View implements Observer {
     ClockPanel panel;
     JButton button;
     
-    public View(Model model) {
-        final Alarms alarm = new Alarms();
+    public View(final Model model) {
         
-        JFrame frame = new JFrame();
+        final JFrame frame = new JFrame();
         panel = new ClockPanel(model);
         //frame.setContentPane(panel);
         frame.setTitle("Java Clock");
@@ -41,7 +41,7 @@ public class View implements Observer {
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {               
-                System.out.println(alarm.head());
+                model.nextAlarm();
             } 
         });
         
@@ -55,15 +55,14 @@ public class View implements Observer {
         // Adding Listener to JButton for adding alarms. 
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
-            {               
-                Random r = new Random();
-                String str = "";
+            {
+                String hour = (String)JOptionPane.showInputDialog(frame, "Add an alarm:", null );
+                String minute  = (String)JOptionPane.showInputDialog(frame, "Add an alarm:", null );
+                String second  = (String)JOptionPane.showInputDialog(frame, "Add an alarm:", null );
                 
-                str+= r.nextInt(24) + ":";
-                str+= r.nextInt(60) + ":";
-                str+= r.nextInt(60);
+                System.out.println(hour+":"+minute+":"+second);
                 
-                alarm.add(str);
+                model.addAlarm();
             } 
         });
         
@@ -73,7 +72,7 @@ public class View implements Observer {
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {               
-                alarm.pop();
+                model.removeHead();
             } 
         });
         
@@ -84,11 +83,11 @@ public class View implements Observer {
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {                 
-                System.out.println(alarm.toString());
+                model.printQueue();
             } 
         }); 
         
-        
+
         // End of borderlayout code
         frame.pack();
         frame.setVisible(true);

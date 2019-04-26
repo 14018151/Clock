@@ -27,5 +27,33 @@ public class Model extends Observable {
             setChanged();
             notifyObservers();
         }
+        
+        String time = hour +":"+minute+":"+second;
+        
+        if(!alarm.isEmpty()){
+            if(alarm.head().equals(time)){
+            alarm.pop();
+                System.out.println("test");
+            }
+        }
     }
+    
+    void nextAlarm() {
+        System.out.println(alarm.head());
+    }
+
+    void addAlarm() {
+        
+    
+        alarm.add("18:53:00");
+    }
+
+    void removeHead() {
+        alarm.pop();
+    }
+    
+    void printQueue(){
+        System.out.println(alarm.toString());
+    }
+    
 }

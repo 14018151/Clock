@@ -3,6 +3,8 @@ package clock;
 import java.text.ParseException;
 
 public class Clock {
+    Alarms alarm = new Alarms();
+    
     
     public static void main(String[] args) throws ParseException {
         Model model = new Model();
