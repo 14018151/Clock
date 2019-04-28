@@ -35,7 +35,7 @@ public class Model extends Observable {
                     final JFrame frame = new JFrame();
                     JOptionPane.showMessageDialog(frame, "It is "+time,"Alarm", JOptionPane.OK_OPTION);
                     alarm.pop();
-                }
+                } 
             }
         }
     }
