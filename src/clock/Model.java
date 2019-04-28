@@ -2,6 +2,8 @@ package clock;
 
 import java.util.Calendar;
 import java.util.Observable;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 //import java.util.GregorianCalendar;
 
 public class Model extends Observable {
@@ -30,15 +32,21 @@ public class Model extends Observable {
             String time = hour +":"+minute+":"+second;
             if(!alarm.isEmpty()){
                 if(alarm.head().equals(time)){
+                    final JFrame frame = new JFrame();
+                    JOptionPane.showMessageDialog(frame, "It is "+time,"Alarm", JOptionPane.OK_OPTION);
                     alarm.pop();
-                    System.out.println(time);
                 }
             }
         }
     }
     
-    void nextAlarm() {
-        System.out.println(alarm.head());
+    String nextAlarm() {
+        if(!alarm.isEmpty()){
+            return alarm.head();
+        }else{
+            return "There are no alarms set";
+        }
+        
     }
 
     void addAlarm(String str) {
@@ -51,6 +59,10 @@ public class Model extends Observable {
     
     void printQueue(){
         System.out.println(alarm.toString());
+    }
+    
+    boolean checkEmpty(){
+        return alarm.isEmpty();
     }
     
 }

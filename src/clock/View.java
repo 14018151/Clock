@@ -34,21 +34,34 @@ public class View implements Observer {
         
         Container pane = frame.getContentPane();
         
-        button = new JButton("Show Head");
-        pane.add(button, BorderLayout.PAGE_START);
-         
-        button.addActionListener(new ActionListener() { 
+        final JButton nextButton = new JButton("Next Alarm: " + model.nextAlarm());
+        
+        if(!model.checkEmpty()){
+            nextButton.setText(nextButton.getText()+". Click to remove");
+        }
+        
+        pane.add(nextButton, BorderLayout.NORTH);
+                 
+        nextButton.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
-            {               
-                model.nextAlarm();
-            } 
+            {
+                model.removeHead();
+                
+                nextButton.setText("Next Alarm: " + model.nextAlarm());
+                        
+                if (!model.checkEmpty()) {
+                    nextButton.setText(nextButton.getText() + ". Click to remove");
+                }
+            }
+                
+             
         });
         
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
          
         button = new JButton("Add Alarm");
-        pane.add(button, BorderLayout.LINE_START);
+        pane.add(button, BorderLayout.WEST);
         
         //https://www.geeksforgeeks.org/jradiobutton-java-swing/
         //https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
@@ -106,6 +119,12 @@ public class View implements Observer {
                         String alarmInput = hoursString+":"+minutesString+":"+secondsString;
 
                         model.addAlarm(alarmInput);
+                        
+                        nextButton.setText("Next Alarm: " + model.nextAlarm());
+
+                        if (!model.checkEmpty()) {
+                            nextButton.setText(nextButton.getText() + ". Click to remove");
+                        }
                     }
                     
                 } catch (NumberFormatException ex) {
@@ -114,19 +133,12 @@ public class View implements Observer {
             } 
         });
         
-        button = new JButton("Remove Head");
-        pane.add(button, BorderLayout.PAGE_END);
-                 
-        button.addActionListener(new ActionListener() { 
-            public void actionPerformed(ActionEvent e) 
-            {               
-                model.removeHead();
-            } 
-        });
+        
+
         
         
         button = new JButton("View Alarms");
-        pane.add(button, BorderLayout.LINE_END);
+        pane.add(button, BorderLayout.EAST);
         
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
