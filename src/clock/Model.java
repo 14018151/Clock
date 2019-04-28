@@ -30,10 +30,11 @@ public class Model extends Observable {
             notifyObservers();
             
             String time = hour +":"+minute+":"+second;
+            
             if(!alarm.isEmpty()){
                 if(alarm.head().equals(time)){
-                    final JFrame frame = new JFrame();
-                    JOptionPane.showMessageDialog(frame, "It is "+time,"Alarm", JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(null, "It is "+time,"Alarm", JOptionPane.OK_OPTION);
+                    
                     alarm.pop();
                 } 
             }
