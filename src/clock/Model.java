@@ -1,10 +1,14 @@
 package clock;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Observable;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-//import java.util.GregorianCalendar;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Model extends Observable {
     Alarms alarm = new Alarms();
@@ -47,7 +51,6 @@ public class Model extends Observable {
         }else{
             return "There are no alarms set";
         }
-        
     }
 
     void addAlarm(String str) {
@@ -58,12 +61,42 @@ public class Model extends Observable {
         alarm.pop();
     }
     
-    void printQueue(){
-        System.out.println(alarm.toString());
+    String printQueue(){
+        return alarm.toString();
     }
     
     boolean checkEmpty(){
         return alarm.isEmpty();
+    }
+    
+    void viewAlarms(){
+        if (checkEmpty()) {
+            JFrame viewFrame = new JFrame();
+            JOptionPane.showMessageDialog(viewFrame, "There are no alarms set", "Empty", JOptionPane.OK_OPTION);
+        } else {
+            Object[] allAlarms  = alarm.items.toArray();
+            
+            Arrays.sort(allAlarms);            
+            
+            JPanel viewPanel = new JPanel();
+            
+            for(int x = 0; x < allAlarms.length; x++){
+                JTextField alarmEdit = new JTextField(8);
+                
+                alarmEdit.setText(allAlarms[x].toString());
+                viewPanel.add(alarmEdit);
+                
+                JButton editButton = new JButton("Edit");
+                viewPanel.add(editButton);
+                
+                JButton delButton = new JButton("Delete");
+                viewPanel.add(delButton);
+                
+                viewPanel.add(new JLabel(" "));
+            }
+             
+            JOptionPane.showMessageDialog(null, viewPanel, "Alarms", JOptionPane.PLAIN_MESSAGE );
+        }
     }
     
 }
