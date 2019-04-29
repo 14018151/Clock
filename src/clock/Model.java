@@ -1,8 +1,11 @@
 package clock;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Observable;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -80,6 +83,17 @@ public class Model extends Observable {
             
             JPanel viewPanel = new JPanel();
             
+            int panelX = 210;
+            int panelY = allAlarms.length * 35;
+            
+            if(allAlarms.length > 10){
+                panelX = 500;
+                panelY = allAlarms.length * 17;
+            }
+            
+            
+            viewPanel.setPreferredSize(new Dimension(panelX, panelY));
+            
             for(int x = 0; x < allAlarms.length; x++){
                 JTextField alarmEdit = new JTextField(8);
                 
@@ -92,7 +106,9 @@ public class Model extends Observable {
                 JButton delButton = new JButton("Delete");
                 viewPanel.add(delButton);
                 
-                viewPanel.add(new JLabel(" "));
+                if(allAlarms.length > 10){
+                    viewPanel.add(Box.createHorizontalStrut(10));
+                }
             }
              
             JOptionPane.showMessageDialog(null, viewPanel, "Alarms", JOptionPane.PLAIN_MESSAGE );
