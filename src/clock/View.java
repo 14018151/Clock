@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
-import java.util.Random;
+
 
 
 public class View implements Observer {
@@ -14,10 +14,8 @@ public class View implements Observer {
     ClockPanel panel;
     JButton button;
     
-    public View(Model model) {
-        final Alarms alarm = new Alarms();
-        
-        JFrame frame = new JFrame();
+    public View(final Model model) {
+        final JFrame frame = new JFrame();
         panel = new ClockPanel(model);
         //frame.setContentPane(panel);
         frame.setTitle("Java Clock");
@@ -25,70 +23,108 @@ public class View implements Observer {
         
         // Start of border layout code
         
-        // I've just put a single button in each of the border positions:
-        // PAGE_START (i.e. top), PAGE_END (bottom), LINE_START (left) and
-        // LINE_END (right). You can omit any of these, or replace the button
-        // with something else like a label or a menu bar. Or maybe you can
-        // figure out how to pack more than one thing into one of those
-        // positions. This is the very simplest border layout possible, just
-        // to help you get started.
-        
         Container pane = frame.getContentPane();
         
-        button = new JButton("Show Head");
-        pane.add(button, BorderLayout.PAGE_START);
-         
-        button.addActionListener(new ActionListener() { 
+        final JButton nextButton = new JButton("Next Alarm: " + model.nextAlarm());
+        
+        if(!model.checkEmpty()){
+            nextButton.setText(nextButton.getText()+". Click to remove");
+        }
+        
+        pane.add(nextButton, BorderLayout.NORTH);
+                 
+        nextButton.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
-            {               
-                System.out.println(alarm.head());
-            } 
+            {
+                model.removeHead();
+                
+                nextButton.setText("Next Alarm: " + model.nextAlarm());
+                        
+                if (!model.checkEmpty()) {
+                    nextButton.setText(nextButton.getText() + ". Click to remove");
+                }
+            }
+                
+             
         });
         
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
          
         button = new JButton("Add Alarm");
-        pane.add(button, BorderLayout.LINE_START);
+        pane.add(button, BorderLayout.WEST);
         
         //https://www.geeksforgeeks.org/jradiobutton-java-swing/
+        //https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
         // Adding Listener to JButton for adding alarms. 
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
-            {               
-                Random r = new Random();
-                String str = "";
+            {                
+                JTextField hours = new JTextField(2);
+                JTextField minutes = new JTextField(2);
+                JTextField seconds = new JTextField(2);
                 
-                str+= r.nextInt(24) + ":";
-                str+= r.nextInt(60) + ":";
-                str+= r.nextInt(60);
-                
-                alarm.add(str);
-            } 
-        });
-        
-        button = new JButton("Remove Head");
-        pane.add(button, BorderLayout.PAGE_END);
-                 
-        button.addActionListener(new ActionListener() { 
-            public void actionPerformed(ActionEvent e) 
-            {               
-                alarm.pop();
+                JPanel alarmPanel = new JPanel();
+                alarmPanel.add(new JLabel("Hour:"));
+                alarmPanel.add(hours);
+                alarmPanel.add(Box.createHorizontalStrut(10)); // a spacer
+                alarmPanel.add(new JLabel("Minutes:"));
+                alarmPanel.add(minutes);
+                alarmPanel.add(Box.createHorizontalStrut(10)); // a spacer
+                alarmPanel.add(new JLabel("Seconds:"));
+                alarmPanel.add(seconds);
+
+                int result = JOptionPane.showConfirmDialog(null, alarmPanel, "Enter an alarm time", JOptionPane.OK_CANCEL_OPTION);
+                                
+                try {
+                    int hoursint = Integer.parseInt(hours.getText());
+                    int minutesint = Integer.parseInt(minutes.getText());
+                    int secondsint = Integer.parseInt(seconds.getText());
+                    
+                    if(hoursint > 23 || hoursint < 00){
+                        JOptionPane.showMessageDialog(frame, "24 hours in a day", "Error", JOptionPane.WARNING_MESSAGE);
+                    }else if(minutesint > 59 || hoursint < 00){
+                        JOptionPane.showMessageDialog(frame, "60 minutes in an hour", "Error", JOptionPane.WARNING_MESSAGE);
+                    }else if(secondsint > 59 || hoursint < 00){
+                        JOptionPane.showMessageDialog(frame, "60 seconds in a minute", "Error", JOptionPane.WARNING_MESSAGE);
+                    }else{
+                        hoursint = Integer.parseInt(hours.getText());
+                        minutesint = Integer.parseInt(minutes.getText());
+                        secondsint = Integer.parseInt(seconds.getText());
+                        
+                        String hoursString = Integer.toString(hoursint); 
+                        String minutesString = Integer.toString(minutesint);
+                        String secondsString = Integer.toString(secondsint);
+                        
+                        String alarmInput = hoursString+":"+minutesString+":"+secondsString;
+
+                        model.addAlarm(alarmInput);
+                        
+                        nextButton.setText("Next Alarm: " + model.nextAlarm());
+
+                        if (!model.checkEmpty()) {
+                            nextButton.setText(nextButton.getText() + ". Click to remove");
+                        }
+                    }
+                    
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Alarm must be formatted as 00:00:00", "Error", JOptionPane.WARNING_MESSAGE);
+                }
             } 
         });
         
         
         button = new JButton("View Alarms");
-        pane.add(button, BorderLayout.LINE_END);
+        pane.add(button, BorderLayout.EAST);
         
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {                 
-                System.out.println(alarm.toString());
+                System.out.println(model.printQueue());
+                model.viewAlarms();               
             } 
-        }); 
-        
-        
+        });
+
         // End of borderlayout code
         frame.pack();
         frame.setVisible(true);
