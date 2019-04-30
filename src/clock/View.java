@@ -1,15 +1,22 @@
 package clock;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
+import java.util.Random;
+
 
 public class View implements Observer {
     
     ClockPanel panel;
+    JButton button;
     
     public View(Model model) {
+        final Alarms alarm = new Alarms();
+        
         JFrame frame = new JFrame();
         panel = new ClockPanel(model);
         //frame.setContentPane(panel);
@@ -28,23 +35,61 @@ public class View implements Observer {
         
         Container pane = frame.getContentPane();
         
-        JButton button = new JButton("Button 1 (PAGE_START)");
+        button = new JButton("Show Head");
         pane.add(button, BorderLayout.PAGE_START);
          
+        button.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e) 
+            {               
+                System.out.println(alarm.head());
+            } 
+        });
+        
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
          
-        button = new JButton("Button 3 (LINE_START)");
+        button = new JButton("Add Alarm");
         pane.add(button, BorderLayout.LINE_START);
-         
-        button = new JButton("Long-Named Button 4 (PAGE_END)");
+        
+        //https://www.geeksforgeeks.org/jradiobutton-java-swing/
+        // Adding Listener to JButton for adding alarms. 
+        button.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e) 
+            {               
+                Random r = new Random();
+                String str = "";
+                
+                str+= r.nextInt(24) + ":";
+                str+= r.nextInt(60) + ":";
+                str+= r.nextInt(60);
+                
+                alarm.add(str);
+            } 
+        });
+        
+        button = new JButton("Remove Head");
         pane.add(button, BorderLayout.PAGE_END);
-         
-        button = new JButton("5 (LINE_END)");
+                 
+        button.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e) 
+            {               
+                alarm.pop();
+            } 
+        });
+        
+        
+        button = new JButton("View Alarms");
         pane.add(button, BorderLayout.LINE_END);
         
-        // End of borderlayout code
+        button.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e) 
+            {                 
+                System.out.println(alarm.toString());
+            } 
+        }); 
         
+        
+        // End of borderlayout code
         frame.pack();
         frame.setVisible(true);
     }

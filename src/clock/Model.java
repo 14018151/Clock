@@ -5,6 +5,7 @@ import java.util.Observable;
 //import java.util.GregorianCalendar;
 
 public class Model extends Observable {
+    Alarms alarm = new Alarms();
     
     int hour = 0;
     int minute = 0;
