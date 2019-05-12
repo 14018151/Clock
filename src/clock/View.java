@@ -96,6 +96,16 @@ public class View implements Observer {
                         String minutesString = Integer.toString(minutesint);
                         String secondsString = Integer.toString(secondsint);
                         
+                        if(hoursString.length()<2){
+                            hoursString = "0"+hoursString;
+                        }
+                        if(minutesString.length()<2){
+                            minutesString = "0"+secondsString;
+                        }
+                        if(secondsString.length()<2){
+                            secondsString = "0"+secondsString;
+                        }      
+                        
                         String alarmInput = hoursString+":"+minutesString+":"+secondsString;
 
                         model.addAlarm(alarmInput);

@@ -36,7 +36,21 @@ public class Model extends Observable {
             setChanged();
             notifyObservers();
             
-            String time = hour +":"+minute+":"+second;
+            String hoursString = Integer.toString(hour);
+            String minutesString = Integer.toString(minute);
+            String secondsString = Integer.toString(second);
+            
+            if (hoursString.length() < 2) {
+                hoursString = "0" + hoursString;
+            }
+            if (minutesString.length() < 2) {
+                minutesString = "0" + secondsString;
+            }
+            if (secondsString.length() < 2) {
+                secondsString = "0" + secondsString;
+            }
+            
+            String time = hoursString +":"+minutesString+":"+secondsString;
             
             if(!alarm.isEmpty()){
                 if(alarm.head().equals(time)){
