@@ -3,6 +3,7 @@ package clock;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
@@ -88,6 +89,12 @@ public class View implements Observer {
                     }else if(secondsint > 59 || hoursint < 00){
                         JOptionPane.showMessageDialog(frame, "60 seconds in a minute", "Error", JOptionPane.WARNING_MESSAGE);
                     }else{
+                        Calendar date = Calendar.getInstance();
+                        
+                        int currentHour = date.get(Calendar.HOUR_OF_DAY);
+                        int currentMinute = date.get(Calendar.MINUTE);
+                        int currentSecond = date.get(Calendar.SECOND);
+                        
                         hoursint = Integer.parseInt(hours.getText());
                         minutesint = Integer.parseInt(minutes.getText());
                         secondsint = Integer.parseInt(seconds.getText());
@@ -96,12 +103,29 @@ public class View implements Observer {
                         String minutesString = Integer.toString(minutesint);
                         String secondsString = Integer.toString(secondsint);
                         
-                        String alarmInput = hoursString+":"+minutesString+":"+secondsString;
-
+                        if(hoursString.length()<2){
+                            hoursString = "0"+hoursString;
+                        }
+                        if(minutesString.length()<2){
+                            minutesString = "0"+secondsString;
+                        }
+                        if(secondsString.length()<2){
+                            secondsString = "0"+secondsString;
+                        }      
+                        
+                        String alarmInput = "";
+                        
+                        if(hoursint<currentHour || (hoursint==currentHour && minutesint < currentMinute) || (minutesint==currentMinute && secondsint<currentSecond)){
+                            JOptionPane.showMessageDialog(frame, "Alarm has been set for tomorrow", "Error", JOptionPane.WARNING_MESSAGE);
+                            alarmInput = 9999+":" +hoursString+":"+minutesString+":"+secondsString;
+                        }else{
+                            alarmInput = hoursString+":"+minutesString+":"+secondsString;     
+                        }
+                        
                         model.addAlarm(alarmInput);
                         
                         nextButton.setText("Next Alarm: " + model.nextAlarm());
-
+                        
                         if (!model.checkEmpty()) {
                             nextButton.setText(nextButton.getText() + ". Click to remove");
                         }
