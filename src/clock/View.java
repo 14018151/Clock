@@ -3,10 +3,14 @@ package clock;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.Calendar;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -22,8 +26,26 @@ public class View implements Observer {
         frame.setTitle("Java Clock");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // Start of border layout code
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(WindowEvent winEvt) {
+                //https://stackoverflow.com/questions/8689122/joptionpane-yes-no-options-confirm-dialog-box-issue
+                int saveButton = JOptionPane.YES_NO_OPTION;
+                
+
+                //https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+                final int optionPane = JOptionPane.showConfirmDialog (null, "Would you like to save your alarms before closing?","Save",saveButton);
+                
+                if(optionPane==JOptionPane.YES_OPTION){
+                    try {
+                        model.save();
+                    } catch (IOException ex) {
+                        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }                
+            }
+        });
         
+        // Start of border layout code        
         Container pane = frame.getContentPane();
         
         final JButton nextButton = new JButton("Next Alarm: " + model.nextAlarm());

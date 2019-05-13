@@ -5,11 +5,15 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Observable;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -264,4 +268,25 @@ public class Model extends Observable {
         }
     }
     
+    public void load() {
+        
+    }
+    
+    //https://www.geeksforgeeks.org/java-swing-jfilechooser/
+    //https://www.geeksforgeeks.org/file-handling-java-using-filewriter-filereader/
+    public void save() throws IOException{
+        // JFileChooser points to the mentioned path 
+        JFileChooser fileChooser = new JFileChooser("d:");
+
+        // Open the save dialog 
+        int fileChosen = fileChooser.showSaveDialog(null);
+        
+        File file = fileChooser.getSelectedFile();
+        
+        FileWriter alarmSave = new FileWriter(file+".txt");
+        
+        alarmSave.write(alarm.toString());
+        
+        alarmSave.close();
+    }
 }
