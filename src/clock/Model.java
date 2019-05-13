@@ -55,8 +55,7 @@ public class Model extends Observable {
             if(!alarm.isEmpty()){
                 if(alarm.head().equals(time)){
                     JOptionPane.showMessageDialog(null, "It is "+time,"Alarm", JOptionPane.OK_OPTION);
-                    
-                    alarm.pop();
+                    alarm.pop();                    
                 } 
             }
         }
