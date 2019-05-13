@@ -12,11 +12,10 @@ public class Controller {
     Model model;
     View view;
     
-    public Controller(Model m, View v) throws FileNotFoundException {
+    public Controller(Model m, View v){
         model = m;
         view = v;
-        
-        model.load();
+       
         
         listener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {

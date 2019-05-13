@@ -195,7 +195,6 @@ public class Model extends Observable {
                             else{
                                 if (!newAlarm.substring(2, 3).equals(":") || !newAlarm.substring(5, 6).equals(":") || newAlarm.length()!=8) {
                                     JOptionPane.showMessageDialog(frame, "Alarm must be formatted as 00:00:00", "Error", JOptionPane.WARNING_MESSAGE);
-                                    System.out.println("Error");
                                 } else {
                                     int hoursint = Integer.parseInt(newAlarm.substring(0, 2));
                                     int minutesint = Integer.parseInt(newAlarm.substring(3, 5));
@@ -275,67 +274,68 @@ public class Model extends Observable {
     }
     
     public void load() throws FileNotFoundException {
-        int loadButton = JOptionPane.YES_NO_OPTION;
         
-        final int optionPane = JOptionPane.showConfirmDialog (null, "Would you like to load alarms before opening?","Save",loadButton);
-                
-        if(optionPane==JOptionPane.YES_OPTION){
-            JFileChooser fileChooser = new JFileChooser("FileSystemView.getFileSystemView().getHomeDirectory()");
+        JFileChooser fileChooser = new JFileChooser("FileSystemView.getFileSystemView().getHomeDirectory()");
 
-            // set a title for the dialog 
-            fileChooser.setDialogTitle("Select a .ics file");
+        // set a title for the dialog 
+        fileChooser.setDialogTitle("Select a .txt file");
 
-            // only allow files of .txt extension 
-            FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .ics files", "ics");
-            fileChooser.addChoosableFileFilter(restrict);
-            
-            // Open the choose file dialog 
-            int fileChosen = fileChooser.showOpenDialog(null);
+        // only allow files of .txt extension 
+        FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .txt files", "txt");
+        fileChooser.addChoosableFileFilter(restrict);
 
-            
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
+        // Open the choose file dialog 
+        int fileChosen = fileChooser.showOpenDialog(null);
+
+        // if the user selects a file 
+        if (fileChosen == JFileChooser.APPROVE_OPTION) {
             //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
             File file = fileChooser.getSelectedFile();
-            
+
             FileReader alarmLoad = new FileReader(file);
-            
+
             Scanner loading = new Scanner(alarmLoad);
-            
-            while(loading.hasNextLine()){
+
+            while (loading.hasNextLine()) {
                 String item = loading.nextLine();
-                
+
                 Calendar date = Calendar.getInstance();
-                
+
                 int currentHour = date.get(Calendar.HOUR_OF_DAY);
                 int currentMinute = date.get(Calendar.MINUTE);
                 int currentSecond = date.get(Calendar.SECOND);
-                
+
                 int hoursint, minutesint, secondsint;
                 String newAlarm;
-                
-                if(item.substring(0, 4).equals("9999")){
-                    hoursint = Integer.parseInt(item.substring(5, 7));
-                    minutesint = Integer.parseInt(item.substring(8, 10));
-                    secondsint = Integer.parseInt(item.substring(11, 13));
-                    
-                    if (hoursint < currentHour || (hoursint == currentHour && minutesint < currentMinute) || (minutesint == currentMinute && secondsint < currentSecond)) {
-                        newAlarm = item;
-                    } else {
-                        newAlarm = item.substring(5);
+
+                if (item.substring(0, 4).equals("9999")) {
+                    if (item.substring(4, 5).equals(":") && item.substring(7, 8).equals(":") && item.substring(10, 11).equals(":") && item.length() == 13) {
+                        hoursint = Integer.parseInt(item.substring(5, 7));
+                        minutesint = Integer.parseInt(item.substring(8, 10));
+                        secondsint = Integer.parseInt(item.substring(11, 13));
+
+                        if (hoursint < currentHour || (hoursint == currentHour && minutesint < currentMinute) || (minutesint == currentMinute && secondsint < currentSecond)) {
+                            newAlarm = item;
+                        } else {
+                            newAlarm = item.substring(5);
+                        }
+                        addAlarm(newAlarm);
                     }
-                    
-                    addAlarm(newAlarm);
-                }else{
-                    hoursint = Integer.parseInt(item.substring(0,2));
-                    minutesint = Integer.parseInt(item.substring(3,5));
-                    secondsint = Integer.parseInt(item.substring(6,8));
-                    
-                    if (hoursint < currentHour || (hoursint == currentHour && minutesint < currentMinute) || (minutesint == currentMinute && secondsint < currentSecond)) {
-                        newAlarm = 9999 + item;
-                    } else {
-                        newAlarm = item;
+                } else {
+                    if (item.substring(2, 3).equals(":") && item.substring(5, 6).equals(":") && item.length() == 8) {
+                        hoursint = Integer.parseInt(item.substring(0, 2));
+                        minutesint = Integer.parseInt(item.substring(3, 5));
+                        secondsint = Integer.parseInt(item.substring(6, 8));
+
+                        if (hoursint < currentHour || (hoursint == currentHour && minutesint < currentMinute) || (minutesint == currentMinute && secondsint < currentSecond)) {
+                            newAlarm = 9999 + item;
+                        } else {
+                            newAlarm = item;
+                        }
+                        addAlarm(newAlarm);
                     }
-                    
-                    addAlarm(newAlarm);
                 }
             }
         }        
@@ -348,22 +348,32 @@ public class Model extends Observable {
         JFileChooser fileChooser = new JFileChooser("FileSystemView.getFileSystemView().getHomeDirectory()");
 
         // set a title for the dialog 
-        fileChooser.setDialogTitle("Select an .ics file");
+        fileChooser.setDialogTitle("Select a .txt file");
 
         // only allow files of .txt extension 
-        FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .ics files", "ics");
+        FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .txt files", "txt");
         fileChooser.addChoosableFileFilter(restrict);
+        
+        fileChooser.setAcceptAllFileFilterUsed(false); 
         
         // Open the save dialog 
         int fileChosen = fileChooser.showSaveDialog(null);
         
-        
-        File file = fileChooser.getSelectedFile();
-        
-        FileWriter alarmSave = new FileWriter(file);
-        
-        alarmSave.write(alarm.toString());
-        
-        alarmSave.close();
+        if (fileChosen == JFileChooser.APPROVE_OPTION) {
+
+            File file = fileChooser.getSelectedFile();
+            
+            if(!file.toString().substring((file.toString().length()-4)).equals(".txt")){
+                FileWriter alarmSave = new FileWriter(file+".txt");
+                alarmSave.write(alarm.toString());
+
+                alarmSave.close();
+            }else{
+                FileWriter alarmSave = new FileWriter(file);
+                alarmSave.write(alarm.toString());
+
+                alarmSave.close();
+            }
+        }
     }
 }

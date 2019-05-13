@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 import javax.swing.*;
@@ -22,12 +23,14 @@ public class View implements Observer {
     public View(final Model model) {
         final JFrame frame = new JFrame();
         panel = new ClockPanel(model);
+        final JButton nextButton = new JButton("Next Alarm: " + model.nextAlarm());
+        
         //frame.setContentPane(panel);
         frame.setTitle("Java Clock");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(WindowEvent winEvt) {
+            public void windowClosing(WindowEvent e) {
                 //https://stackoverflow.com/questions/8689122/joptionpane-yes-no-options-confirm-dialog-box-issue
                 int saveButton = JOptionPane.YES_NO_OPTION;
                 
@@ -42,12 +45,26 @@ public class View implements Observer {
                     }
                 }                
             }
+            public void windowOpened(WindowEvent e){
+                int loadButton = JOptionPane.YES_NO_OPTION;
+
+                final int optionPane = JOptionPane.showConfirmDialog(null, "Would you like to load alarms before opening?", "Save", loadButton);
+
+                if (optionPane == JOptionPane.YES_OPTION) {
+                    try {
+                        model.load();
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    nextButton.setText("Next Alarm: " + model.nextAlarm());
+                }
+            }
         });
         
         // Start of border layout code        
         Container pane = frame.getContentPane();
         
-        final JButton nextButton = new JButton("Next Alarm: " + model.nextAlarm());
+        
         
         if(!model.checkEmpty()){
             nextButton.setText(nextButton.getText()+". Click to remove");
