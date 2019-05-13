@@ -3,10 +3,15 @@ package clock;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Calendar;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -18,20 +23,54 @@ public class View implements Observer {
     public View(final Model model) {
         final JFrame frame = new JFrame();
         panel = new ClockPanel(model);
+        final JButton nextButton = new JButton("Next Alarm: " + model.nextAlarm());
+        
         //frame.setContentPane(panel);
         frame.setTitle("Java Clock");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // Start of border layout code
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            //Asks to save a file on close
+            public void windowClosing(WindowEvent e) {
+                //https://stackoverflow.com/questions/8689122/joptionpane-yes-no-options-confirm-dialog-box-issue
+                int saveButton = JOptionPane.YES_NO_OPTION;
+                
+                //https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+                final int optionPane = JOptionPane.showConfirmDialog (null, "Would you like to save your alarms before closing?","Save",saveButton);
+                
+                if(optionPane==JOptionPane.YES_OPTION){
+                    try {
+                        model.save();
+                    } catch (IOException ex) {
+                        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }                
+            }
+            //Asks to load a saved file on open
+            public void windowOpened(WindowEvent e){
+                int loadButton = JOptionPane.YES_NO_OPTION;
+
+                final int optionPane = JOptionPane.showConfirmDialog(null, "Would you like to load alarms before opening?", "Save", loadButton);
+
+                if (optionPane == JOptionPane.YES_OPTION) {
+                    try {
+                        model.load();
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    nextButton.setText("Next Alarm: " + model.nextAlarm());
+                }
+            }
+        });
         
+        // Start of border layout code        
         Container pane = frame.getContentPane();
-        
-        final JButton nextButton = new JButton("Next Alarm: " + model.nextAlarm());
         
         if(!model.checkEmpty()){
             nextButton.setText(nextButton.getText()+". Click to remove");
         }
         
+        //Sets up the button that displays and removes the head of the queue
         pane.add(nextButton, BorderLayout.NORTH);
                  
         nextButton.addActionListener(new ActionListener() { 
@@ -45,13 +84,13 @@ public class View implements Observer {
                     nextButton.setText(nextButton.getText() + ". Click to remove");
                 }
             }
-                
-             
         });
         
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
          
+        
+        //Sets up button to add alarms
         button = new JButton("Add Alarm");
         pane.add(button, BorderLayout.WEST);
         
@@ -77,6 +116,7 @@ public class View implements Observer {
 
                 int result = JOptionPane.showConfirmDialog(null, alarmPanel, "Enter an alarm time", JOptionPane.OK_CANCEL_OPTION);
                                 
+                //Validates the user's input for the alarm
                 try {
                     int hoursint = Integer.parseInt(hours.getText());
                     int minutesint = Integer.parseInt(minutes.getText());
@@ -107,7 +147,7 @@ public class View implements Observer {
                             hoursString = "0"+hoursString;
                         }
                         if(minutesString.length()<2){
-                            minutesString = "0"+secondsString;
+                            minutesString = "0"+minutesString;
                         }
                         if(secondsString.length()<2){
                             secondsString = "0"+secondsString;
@@ -115,6 +155,7 @@ public class View implements Observer {
                         
                         String alarmInput = "";
                         
+                        //Adds 9999 to start of alarm to show that it's due for tomorrow
                         if(hoursint<currentHour || (hoursint==currentHour && minutesint < currentMinute) || (minutesint==currentMinute && secondsint<currentSecond)){
                             JOptionPane.showMessageDialog(frame, "Alarm has been set for tomorrow", "Error", JOptionPane.WARNING_MESSAGE);
                             alarmInput = 9999+":" +hoursString+":"+minutesString+":"+secondsString;
@@ -126,9 +167,12 @@ public class View implements Observer {
                         
                         nextButton.setText("Next Alarm: " + model.nextAlarm());
                         
-                        if (!model.checkEmpty()) {
-                            nextButton.setText(nextButton.getText() + ". Click to remove");
-                        }
+                        
+                    }
+                    if (!model.checkEmpty()) {
+                        nextButton.setText("Next Alarm: " + model.nextAlarm() + ". Click to remove");
+                    }else{
+                        nextButton.setText("Next Alarm: There are no alarms set.");
                     }
                     
                 } catch (NumberFormatException ex) {
@@ -137,15 +181,19 @@ public class View implements Observer {
             } 
         });
         
-        
+        //Sets up and adds button to display the alarms.
         button = new JButton("View Alarms");
         pane.add(button, BorderLayout.EAST);
         
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {                 
-                System.out.println(model.printQueue());
-                model.viewAlarms();               
+                model.viewAlarms();  
+                if (!model.checkEmpty()) {
+                    nextButton.setText("Next Alarm: " + model.nextAlarm() + ". Click to remove");
+                } else {
+                    nextButton.setText("Next Alarm: There are no alarms set");
+                }
             } 
         });
 
