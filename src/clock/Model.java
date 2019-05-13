@@ -338,7 +338,7 @@ public class Model extends Observable {
                         secondsint = Integer.parseInt(item.substring(6, 8));
 
                         if (hoursint < currentHour || (hoursint == currentHour && minutesint < currentMinute) || (minutesint == currentMinute && secondsint < currentSecond)) {
-                            newAlarm = 9999 + item;
+                            newAlarm = 9999 + ":" + item;
                         } else {
                             newAlarm = item;
                         }
