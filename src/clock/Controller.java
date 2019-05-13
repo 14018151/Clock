@@ -1,6 +1,7 @@
 package clock;
 
 import java.awt.event.*;
+import java.io.FileNotFoundException;
 import javax.swing.Timer;
 
 public class Controller {
@@ -11,9 +12,11 @@ public class Controller {
     Model model;
     View view;
     
-    public Controller(Model m, View v) {
+    public Controller(Model m, View v) throws FileNotFoundException {
         model = m;
         view = v;
+        
+        model.load();
         
         listener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {

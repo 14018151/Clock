@@ -6,11 +6,16 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Observable;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -20,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Model extends Observable {
     Alarms alarm = new Alarms();
@@ -268,22 +274,93 @@ public class Model extends Observable {
         }
     }
     
-    public void load() {
+    public void load() throws FileNotFoundException {
+        int loadButton = JOptionPane.YES_NO_OPTION;
         
+        final int optionPane = JOptionPane.showConfirmDialog (null, "Would you like to load alarms before opening?","Save",loadButton);
+                
+        if(optionPane==JOptionPane.YES_OPTION){
+            JFileChooser fileChooser = new JFileChooser("FileSystemView.getFileSystemView().getHomeDirectory()");
+
+            // set a title for the dialog 
+            fileChooser.setDialogTitle("Select a .ics file");
+
+            // only allow files of .txt extension 
+            FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .ics files", "ics");
+            fileChooser.addChoosableFileFilter(restrict);
+            
+            // Open the choose file dialog 
+            int fileChosen = fileChooser.showOpenDialog(null);
+
+            
+            //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
+            File file = fileChooser.getSelectedFile();
+            
+            FileReader alarmLoad = new FileReader(file);
+            
+            Scanner loading = new Scanner(alarmLoad);
+            
+            while(loading.hasNextLine()){
+                String item = loading.nextLine();
+                
+                Calendar date = Calendar.getInstance();
+                
+                int currentHour = date.get(Calendar.HOUR_OF_DAY);
+                int currentMinute = date.get(Calendar.MINUTE);
+                int currentSecond = date.get(Calendar.SECOND);
+                
+                int hoursint, minutesint, secondsint;
+                String newAlarm;
+                
+                if(item.substring(0, 4).equals("9999")){
+                    hoursint = Integer.parseInt(item.substring(5, 7));
+                    minutesint = Integer.parseInt(item.substring(8, 10));
+                    secondsint = Integer.parseInt(item.substring(11, 13));
+                    
+                    if (hoursint < currentHour || (hoursint == currentHour && minutesint < currentMinute) || (minutesint == currentMinute && secondsint < currentSecond)) {
+                        newAlarm = item;
+                    } else {
+                        newAlarm = item.substring(5);
+                    }
+                    
+                    addAlarm(newAlarm);
+                }else{
+                    hoursint = Integer.parseInt(item.substring(0,2));
+                    minutesint = Integer.parseInt(item.substring(3,5));
+                    secondsint = Integer.parseInt(item.substring(6,8));
+                    
+                    if (hoursint < currentHour || (hoursint == currentHour && minutesint < currentMinute) || (minutesint == currentMinute && secondsint < currentSecond)) {
+                        newAlarm = 9999 + item;
+                    } else {
+                        newAlarm = item;
+                    }
+                    
+                    addAlarm(newAlarm);
+                }
+            }
+        }        
     }
     
     //https://www.geeksforgeeks.org/java-swing-jfilechooser/
     //https://www.geeksforgeeks.org/file-handling-java-using-filewriter-filereader/
     public void save() throws IOException{
         // JFileChooser points to the mentioned path 
-        JFileChooser fileChooser = new JFileChooser("d:");
+        JFileChooser fileChooser = new JFileChooser("FileSystemView.getFileSystemView().getHomeDirectory()");
 
+        // set a title for the dialog 
+        fileChooser.setDialogTitle("Select an .ics file");
+
+        // only allow files of .txt extension 
+        FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .ics files", "ics");
+        fileChooser.addChoosableFileFilter(restrict);
+        
         // Open the save dialog 
         int fileChosen = fileChooser.showSaveDialog(null);
         
+        
         File file = fileChooser.getSelectedFile();
         
-        FileWriter alarmSave = new FileWriter(file+".txt");
+        FileWriter alarmSave = new FileWriter(file);
         
         alarmSave.write(alarm.toString());
         

@@ -31,7 +31,6 @@ public class View implements Observer {
                 //https://stackoverflow.com/questions/8689122/joptionpane-yes-no-options-confirm-dialog-box-issue
                 int saveButton = JOptionPane.YES_NO_OPTION;
                 
-
                 //https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
                 final int optionPane = JOptionPane.showConfirmDialog (null, "Would you like to save your alarms before closing?","Save",saveButton);
                 
