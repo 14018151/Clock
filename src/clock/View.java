@@ -126,9 +126,12 @@ public class View implements Observer {
                         
                         nextButton.setText("Next Alarm: " + model.nextAlarm());
                         
-                        if (!model.checkEmpty()) {
-                            nextButton.setText(nextButton.getText() + ". Click to remove");
-                        }
+                        
+                    }
+                    if (!model.checkEmpty()) {
+                        nextButton.setText("Next Alarm: " + model.nextAlarm() + ". Click to remove");
+                    }else{
+                        nextButton.setText("Next Alarm: There are no alarms set.");
                     }
                     
                 } catch (NumberFormatException ex) {
@@ -144,8 +147,12 @@ public class View implements Observer {
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {                 
-                System.out.println(model.printQueue());
-                model.viewAlarms();               
+                model.viewAlarms();  
+                if (!model.checkEmpty()) {
+                    nextButton.setText("Next Alarm: " + model.nextAlarm() + ". Click to remove");
+                } else {
+                    nextButton.setText("Next Alarm: There are no alarms set");
+                }
             } 
         });
 

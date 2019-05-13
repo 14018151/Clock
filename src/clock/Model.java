@@ -54,8 +54,12 @@ public class Model extends Observable {
             
             if(!alarm.isEmpty()){
                 if(alarm.head().equals(time)){
-                    JOptionPane.showMessageDialog(null, "It is "+time,"Alarm", JOptionPane.OK_OPTION);
-                    alarm.pop();                    
+                    alarm.pop();
+                    if(!alarm.isEmpty()){
+                        JOptionPane.showMessageDialog(null, "It is "+time+". Next alarm is: "+alarm.head()+". Click view alarms to update next alarm display.","Alarm", JOptionPane.OK_OPTION);           
+                    }else{
+                        JOptionPane.showMessageDialog(null, "It is "+time+". There is no next alarm. Click view alarms to update next alarm display.","Alarm", JOptionPane.OK_OPTION);
+                    }
                 } 
             }
         }
