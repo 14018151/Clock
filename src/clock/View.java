@@ -107,7 +107,7 @@ public class View implements Observer {
                             hoursString = "0"+hoursString;
                         }
                         if(minutesString.length()<2){
-                            minutesString = "0"+secondsString;
+                            minutesString = "0"+minutesString;
                         }
                         if(secondsString.length()<2){
                             secondsString = "0"+secondsString;

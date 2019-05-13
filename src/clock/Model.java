@@ -2,6 +2,9 @@ package clock;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Observable;
@@ -12,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class Model extends Observable {
     Alarms alarm = new Alarms();
@@ -89,6 +93,10 @@ public class Model extends Observable {
         return alarm.isEmpty();
     }
     
+    void removeAlarm(String str){
+        alarm.remove(str);
+    }
+    
     void viewAlarms(){
         if (checkEmpty()) {
             JFrame viewFrame = new JFrame();
@@ -98,7 +106,7 @@ public class Model extends Observable {
             
             Arrays.sort(allAlarms);            
             
-            JPanel viewPanel = new JPanel();
+            final JPanel viewPanel = new JPanel();
             
             int panelX = 210;
             int panelY = allAlarms.length * 35;
@@ -112,16 +120,140 @@ public class Model extends Observable {
             viewPanel.setPreferredSize(new Dimension(panelX, panelY));
             
             for(int x = 0; x < allAlarms.length; x++){
-                JTextField alarmEdit = new JTextField(8);
+                final JTextField alarmEdit = new JTextField(8);
                 
-                alarmEdit.setText(allAlarms[x].toString());
+                final String alarm = allAlarms[x].toString();
+                
+                alarmEdit.setText(alarm);
                 viewPanel.add(alarmEdit);
                 
                 JButton editButton = new JButton("Edit");
                 viewPanel.add(editButton);
                 
+                editButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        String newAlarm = alarmEdit.getText();
+                        JFrame frame = new JFrame();
+                        try{
+                            if(newAlarm.substring(0, 4).equals("9999")){
+                                if (!newAlarm.substring(4, 5).equals(":") || !newAlarm.substring(7, 8).equals(":")||!newAlarm.substring(10,11).equals(":")||newAlarm.length()!=13) {
+                                    JOptionPane.showMessageDialog(frame, "Alarm must be formatted as 9999:00:00:00", "Error", JOptionPane.WARNING_MESSAGE);
+                                }else{
+                                    int hoursint = Integer.parseInt(newAlarm.substring(5, 7));
+                                    int minutesint = Integer.parseInt(newAlarm.substring(8, 10));
+                                    int secondsint = Integer.parseInt(newAlarm.substring(11, 13));
+
+                                    if (hoursint > 23 || hoursint < 00) {
+                                        JOptionPane.showMessageDialog(frame, "24 hours in a day", "Error", JOptionPane.WARNING_MESSAGE);
+                                    } else if (minutesint > 59 || hoursint < 00) {
+                                        JOptionPane.showMessageDialog(frame, "60 minutes in an hour", "Error", JOptionPane.WARNING_MESSAGE);
+                                    } else if (secondsint > 59 || hoursint < 00) {
+                                        JOptionPane.showMessageDialog(frame, "60 seconds in a minute", "Error", JOptionPane.WARNING_MESSAGE);
+                                    } else {
+                                        Calendar date = Calendar.getInstance();
+
+                                        int currentHour = date.get(Calendar.HOUR_OF_DAY);
+                                        int currentMinute = date.get(Calendar.MINUTE);
+                                        int currentSecond = date.get(Calendar.SECOND);
+
+                                        String hoursString = Integer.toString(hoursint);
+                                        String minutesString = Integer.toString(minutesint);
+                                        String secondsString = Integer.toString(secondsint);
+                                        
+                                        if (hoursString.length() < 2) {
+                                            hoursString = "0" + hoursString;
+                                        }
+                                        if (minutesString.length() < 2) {
+                                            minutesString = "0" + minutesString;
+                                        }
+                                        if (secondsString.length() < 2) {
+                                            secondsString = "0" + secondsString;
+                                        }
+                                        
+                                        if (hoursint < currentHour || (hoursint == currentHour && minutesint < currentMinute) || (minutesint == currentMinute && secondsint < currentSecond)) {
+                                            JOptionPane.showMessageDialog(frame, "Alarm has been set for tomorrow", "Error", JOptionPane.WARNING_MESSAGE);
+                                            newAlarm = 9999 + ":" + hoursString + ":" + minutesString + ":" + secondsString;
+                                        } else {
+                                            newAlarm = hoursString + ":" + minutesString + ":" + secondsString;
+                                        }
+                                        removeAlarm(alarm);
+                                        addAlarm(newAlarm);
+                                        }
+
+                                    }
+                            }
+                            else{
+                                if (!newAlarm.substring(2, 3).equals(":") || !newAlarm.substring(5, 6).equals(":") || newAlarm.length()!=8) {
+                                    JOptionPane.showMessageDialog(frame, "Alarm must be formatted as 00:00:00", "Error", JOptionPane.WARNING_MESSAGE);
+                                    System.out.println("Error");
+                                } else {
+                                    int hoursint = Integer.parseInt(newAlarm.substring(0, 2));
+                                    int minutesint = Integer.parseInt(newAlarm.substring(3, 5));
+                                    int secondsint = Integer.parseInt(newAlarm.substring(6, 8));
+
+                                    if (hoursint > 23 || hoursint < 00) {
+                                        JOptionPane.showMessageDialog(frame, "24 hours in a day", "Error", JOptionPane.WARNING_MESSAGE);
+                                    } else if (minutesint > 59 || hoursint < 00) {
+                                        JOptionPane.showMessageDialog(frame, "60 minutes in an hour", "Error", JOptionPane.WARNING_MESSAGE);
+                                    } else if (secondsint > 59 || hoursint < 00) {
+                                        JOptionPane.showMessageDialog(frame, "60 seconds in a minute", "Error", JOptionPane.WARNING_MESSAGE);
+                                    } else {
+                                        Calendar date = Calendar.getInstance();
+
+                                        int currentHour = date.get(Calendar.HOUR_OF_DAY);
+                                        int currentMinute = date.get(Calendar.MINUTE);
+                                        int currentSecond = date.get(Calendar.SECOND);
+
+                                        String hoursString = Integer.toString(hoursint);
+                                        String minutesString = Integer.toString(minutesint);
+                                        String secondsString = Integer.toString(secondsint);
+
+                                        if (hoursString.length() < 2) {
+                                            hoursString = "0" + hoursString;
+                                        }
+                                        if (minutesString.length() < 2) {
+                                            minutesString = "0" + minutesString;
+                                        }
+                                        if (secondsString.length() < 2) {
+                                            secondsString = "0" + secondsString;
+                                        }
+                                        
+                                        if (hoursint < currentHour || (hoursint == currentHour && minutesint < currentMinute) || (minutesint == currentMinute && secondsint < currentSecond)) {
+                                            JOptionPane.showMessageDialog(null, "Alarm has been set for tomorrow", "Error", JOptionPane.WARNING_MESSAGE);
+                                            newAlarm = 9999 + ":" + hoursString + ":" + minutesString + ":" + secondsString;
+                                        } else {
+                                            newAlarm = hoursString + ":" + minutesString + ":" + secondsString;
+                                        }
+
+                                        removeAlarm(alarm);
+                                        addAlarm(newAlarm);
+                                    }
+
+                                }
+                            }
+                            
+  
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(null, "Alarm must be formatted as 00:00:00", "Error", JOptionPane.WARNING_MESSAGE);
+                        }
+                        
+                        Window win = SwingUtilities.getWindowAncestor(viewPanel);
+                        win.dispose();
+                    }
+                });
+                
+                
                 JButton delButton = new JButton("Delete");
                 viewPanel.add(delButton);
+                
+                delButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        removeAlarm(alarm);
+                        //https://stackoverflow.com/questions/26762324/swing-how-to-close-jpanel-programmatically
+                        Window win = SwingUtilities.getWindowAncestor(viewPanel);
+                        win.dispose();
+                    }
+                });
                 
                 if(allAlarms.length > 10){
                     viewPanel.add(Box.createHorizontalStrut(10));
