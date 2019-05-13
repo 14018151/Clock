@@ -54,6 +54,7 @@ public class Model extends Observable {
             String minutesString = Integer.toString(minute);
             String secondsString = Integer.toString(second);
             
+            //Formats the current time so it can be checked properly
             if (hoursString.length() < 2) {
                 hoursString = "0" + hoursString;
             }
@@ -66,6 +67,7 @@ public class Model extends Observable {
             
             String time = hoursString +":"+minutesString+":"+secondsString;
             
+            //Checks current time against head of queue - if they match display a popup declaring the alarm and remove the head of the queue.
             if(!alarm.isEmpty()){
                 if(alarm.head().equals(time)){
                     alarm.pop();
@@ -103,11 +105,13 @@ public class Model extends Observable {
         return alarm.isEmpty();
     }
     
+    
     void removeAlarm(String str){
         alarm.remove(str);
     }
     
     void viewAlarms(){
+        //Makes sure there is actually at least one alarm set.
         if (checkEmpty()) {
             JFrame viewFrame = new JFrame();
             JOptionPane.showMessageDialog(viewFrame, "There are no alarms set", "Empty", JOptionPane.OK_OPTION);
@@ -118,6 +122,7 @@ public class Model extends Observable {
             
             final JPanel viewPanel = new JPanel();
             
+            //Setting the size of the panel - makes it wider when there are more than 10 alarms so they can be in two columns
             int panelX = 210;
             int panelY = allAlarms.length * 35;
             
@@ -129,6 +134,7 @@ public class Model extends Observable {
             
             viewPanel.setPreferredSize(new Dimension(panelX, panelY));
             
+            //Displays each alarm alongside an edit and delte button
             for(int x = 0; x < allAlarms.length; x++){
                 final JTextField alarmEdit = new JTextField(8);
                 
@@ -137,6 +143,7 @@ public class Model extends Observable {
                 alarmEdit.setText(alarm);
                 viewPanel.add(alarmEdit);
                 
+                //Sets up an individual edit button for each alarm
                 JButton editButton = new JButton("Edit");
                 viewPanel.add(editButton);
                 
@@ -145,6 +152,7 @@ public class Model extends Observable {
                         String newAlarm = alarmEdit.getText();
                         JFrame frame = new JFrame();
                         try{
+                            //Checks formatting of editted alarm and validates it.
                             if(newAlarm.substring(0, 4).equals("9999")){
                                 if (!newAlarm.substring(4, 5).equals(":") || !newAlarm.substring(7, 8).equals(":")||!newAlarm.substring(10,11).equals(":")||newAlarm.length()!=13) {
                                     JOptionPane.showMessageDialog(frame, "Alarm must be formatted as 9999:00:00:00", "Error", JOptionPane.WARNING_MESSAGE);
@@ -251,7 +259,7 @@ public class Model extends Observable {
                     }
                 });
                 
-                
+                //Sets up an individual delete button on each alarm
                 JButton delButton = new JButton("Delete");
                 viewPanel.add(delButton);
                 
@@ -268,19 +276,18 @@ public class Model extends Observable {
                     viewPanel.add(Box.createHorizontalStrut(10));
                 }
             }
-             
             JOptionPane.showMessageDialog(null, viewPanel, "Alarms", JOptionPane.PLAIN_MESSAGE );
         }
     }
     
     public void load() throws FileNotFoundException {
-        
+        //Sets the file chooser to the user's home directory.
         JFileChooser fileChooser = new JFileChooser("FileSystemView.getFileSystemView().getHomeDirectory()");
 
-        // set a title for the dialog 
+        //Set a title for the dialog 
         fileChooser.setDialogTitle("Select a .txt file");
 
-        // only allow files of .txt extension 
+        //Only allow files of with .txt extension 
         FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .txt files", "txt");
         fileChooser.addChoosableFileFilter(restrict);
 
@@ -289,7 +296,7 @@ public class Model extends Observable {
         // Open the choose file dialog 
         int fileChosen = fileChooser.showOpenDialog(null);
 
-        // if the user selects a file 
+        //If the user selects a file 
         if (fileChosen == JFileChooser.APPROVE_OPTION) {
             //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
             File file = fileChooser.getSelectedFile();
@@ -310,6 +317,7 @@ public class Model extends Observable {
                 int hoursint, minutesint, secondsint;
                 String newAlarm;
 
+                //Makes sure each line of the file is a correctly formatted alarm. Also checks if alarm is set for a time before or after the current time and adjusts it being added accordingly
                 if (item.substring(0, 4).equals("9999")) {
                     if (item.substring(4, 5).equals(":") && item.substring(7, 8).equals(":") && item.substring(10, 11).equals(":") && item.length() == 13) {
                         hoursint = Integer.parseInt(item.substring(5, 7));
@@ -359,6 +367,7 @@ public class Model extends Observable {
         // Open the save dialog 
         int fileChosen = fileChooser.showSaveDialog(null);
         
+        //Saves the file. Also adds .txt if it's not already present
         if (fileChosen == JFileChooser.APPROVE_OPTION) {
 
             File file = fileChooser.getSelectedFile();

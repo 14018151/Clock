@@ -30,6 +30,7 @@ public class View implements Observer {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            //Asks to save a file on close
             public void windowClosing(WindowEvent e) {
                 //https://stackoverflow.com/questions/8689122/joptionpane-yes-no-options-confirm-dialog-box-issue
                 int saveButton = JOptionPane.YES_NO_OPTION;
@@ -45,6 +46,7 @@ public class View implements Observer {
                     }
                 }                
             }
+            //Asks to load a saved file on open
             public void windowOpened(WindowEvent e){
                 int loadButton = JOptionPane.YES_NO_OPTION;
 
@@ -64,12 +66,11 @@ public class View implements Observer {
         // Start of border layout code        
         Container pane = frame.getContentPane();
         
-        
-        
         if(!model.checkEmpty()){
             nextButton.setText(nextButton.getText()+". Click to remove");
         }
         
+        //Sets up the button that displays and removes the head of the queue
         pane.add(nextButton, BorderLayout.NORTH);
                  
         nextButton.addActionListener(new ActionListener() { 
@@ -83,13 +84,13 @@ public class View implements Observer {
                     nextButton.setText(nextButton.getText() + ". Click to remove");
                 }
             }
-                
-             
         });
         
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
          
+        
+        //Sets up button to add alarms
         button = new JButton("Add Alarm");
         pane.add(button, BorderLayout.WEST);
         
@@ -115,6 +116,7 @@ public class View implements Observer {
 
                 int result = JOptionPane.showConfirmDialog(null, alarmPanel, "Enter an alarm time", JOptionPane.OK_CANCEL_OPTION);
                                 
+                //Validates the user's input for the alarm
                 try {
                     int hoursint = Integer.parseInt(hours.getText());
                     int minutesint = Integer.parseInt(minutes.getText());
@@ -153,6 +155,7 @@ public class View implements Observer {
                         
                         String alarmInput = "";
                         
+                        //Adds 9999 to start of alarm to show that it's due for tomorrow
                         if(hoursint<currentHour || (hoursint==currentHour && minutesint < currentMinute) || (minutesint==currentMinute && secondsint<currentSecond)){
                             JOptionPane.showMessageDialog(frame, "Alarm has been set for tomorrow", "Error", JOptionPane.WARNING_MESSAGE);
                             alarmInput = 9999+":" +hoursString+":"+minutesString+":"+secondsString;
@@ -178,7 +181,7 @@ public class View implements Observer {
             } 
         });
         
-        
+        //Sets up and adds button to display the alarms.
         button = new JButton("View Alarms");
         pane.add(button, BorderLayout.EAST);
         
