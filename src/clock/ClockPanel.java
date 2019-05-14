@@ -26,7 +26,7 @@ public class ClockPanel extends JPanel {
     
     /**
      * Actually creates and draws the clock panel
-     * @param g
+     * @param g The graphics component actually needed to create the clock.
      */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

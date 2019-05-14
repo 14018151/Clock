@@ -312,7 +312,10 @@ public class Model extends Observable {
                 delButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         removeAlarm(alarm);
-                        //https://stackoverflow.com/questions/26762324/swing-how-to-close-jpanel-programmatically
+                        /*
+                            Bab, L. (2018). Swing how to close JPanel programmatically. [online] Stack Overflow. 
+                            Available at: https://stackoverflow.com/questions/26762324/swing-how-to-close-jpanel-programmatically [Accessed 13 May 2019].
+                        */
                         Window win = SwingUtilities.getWindowAncestor(viewPanel);
                         win.dispose();
                     }
@@ -399,12 +402,18 @@ public class Model extends Observable {
         }        
     }
     
-    //https://www.geeksforgeeks.org/java-swing-jfilechooser/
-    //https://www.geeksforgeeks.org/file-handling-java-using-filewriter-filereader/
+    /* Code for opening and choosing a file to save to
+        GeeksforGeeks. (n.d.). Java Swing | JFileChooser - GeeksforGeeks. [online] 
+        Available at: https://www.geeksforgeeks.org/java-swing-jfilechooser/ [Accessed 13 May 2019].
+    */
+    /* Code for reading and writing from and to the file.
+        GeeksforGeeks. (n.d.). File handling in Java using FileWriter and FileReader - GeeksforGeeks. [online] 
+        Available at: https://www.geeksforgeeks.org/file-handling-java-using-filewriter-filereader/ [Accessed 13 May 2019].
+    */
 
     /**
      * Asks to save alarms to a file and then do so if the users desires to
-     * @throws IOException
+     * @throws IOException if the user cancels or there's an issue with writing the file
      */
     public void save() throws IOException{
         // JFileChooser points to the mentioned path 

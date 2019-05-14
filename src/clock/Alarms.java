@@ -2,8 +2,11 @@ package clock;
 
 import java.util.*;
 
+/* Code for setting up the priority queue class
+    GeeksforGeeks. (n.d.). PriorityQueue in Java - GeeksforGeeks. [online] 
+    Available at: https://www.geeksforgeeks.org/priority-queue-class-in-java-2/ [Accessed 23 Apr. 2019].
+*/
 /**
- * https://www.geeksforgeeks.org/priority-queue-class-in-java-2/
  * @author 14018151 Joseph Kelly
  */
 public class Alarms {

@@ -40,10 +40,16 @@ public class View implements Observer {
              * Asks to save a file on close
              */
             public void windowClosing(WindowEvent e) {
-                //https://stackoverflow.com/questions/8689122/joptionpane-yes-no-options-confirm-dialog-box-issue
+                /* Code used from:
+                    Stack Overflow. (2011). JOptionPane YES/No Options Confirm Dialog Box Issue. [online] 
+                    Available at: https://stackoverflow.com/questions/8689122/joptionpane-yes-no-options-confirm-dialog-box-issue [Accessed 13 May 2019].
+                */
                 int saveButton = JOptionPane.YES_NO_OPTION;
                 
-                //https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+                /*
+                    Docs.oracle.com. (n.d.). How to Make Dialogs (The Java™ Tutorials > Creating a GUI With JFC/Swing > Using Swing Components). [online] 
+                    Available at: https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html [Accessed 13 May 2019].
+                */
                 final int optionPane = JOptionPane.showConfirmDialog (null, "Would you like to save your alarms before closing?","Save",saveButton);
                 
                 if(optionPane==JOptionPane.YES_OPTION){
@@ -107,8 +113,11 @@ public class View implements Observer {
         button = new JButton("Add Alarm");
         pane.add(button, BorderLayout.WEST);
         
-        //https://www.geeksforgeeks.org/jradiobutton-java-swing/
-        //https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+        
+        /* Code used from: 
+            Docs.oracle.com. (n.d.). How to Make Dialogs (The Java™ Tutorials > Creating a GUI With JFC/Swing > Using Swing Components). [online] 
+            Available at: https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html [Accessed 19 Apr. 2019].
+        */
         /**
          * Displays a pop-up letting users input hours, minutes, and seconds of the alarm
          * Validates their entries and if all goes well adds the alarm to the queue
@@ -223,8 +232,7 @@ public class View implements Observer {
     
     /**
      * Repaints the clock from ClockPanel
-     * @param o Observing model so that every time it updates (every 100 milliseconds) this function repaints the clock
-     * @param arg
+     * @param o Observing model so that every time it updates (every 100 milliseconds) it repaints the clock
      */
     public void update(Observable o, Object arg) {
         panel.repaint();

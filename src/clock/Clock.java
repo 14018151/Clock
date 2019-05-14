@@ -12,7 +12,6 @@ public class Clock {
     /**
      * Initialises the classes to be used.
      * @param args unused and only even accessed when running this program from command line
-     * @throws ParseException
      */
     public static void main(String[] args) throws ParseException {
         Model model = new Model();
