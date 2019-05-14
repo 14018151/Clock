@@ -223,7 +223,7 @@ public class View implements Observer {
     
     /**
      * Repaints the clock from ClockPanel
-     * @param o Observing model so that every time it updates (every 100 milliseconds) this function repaints the clock
+     * @param o Observing model so that every time it updates (every 100 milliseconds) it repaints the clock
      */
     public void update(Observable o, Object arg) {
         panel.repaint();
