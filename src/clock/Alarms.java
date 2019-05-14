@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * https://www.geeksforgeeks.org/priority-queue-class-in-java-2/
- * @author 14018151
+ * @author 14018151 Joseph Kelly
  */
 public class Alarms {
     // Creating empty priority queue 

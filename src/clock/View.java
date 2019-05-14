@@ -13,13 +13,19 @@ import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-
+/**
+ * Has functionality but also some pointers to model class
+ * @author 14018151 Joseph Kelly
+ */
 public class View implements Observer {
     
     ClockPanel panel;
     JButton button;
     
+    /**
+     * Sets up the view class linking to model and handles all the buttons
+     * @param model Sets up a model object to be linked and referenced throughout
+     */
     public View(final Model model) {
         final JFrame frame = new JFrame();
         panel = new ClockPanel(model);
@@ -30,7 +36,9 @@ public class View implements Observer {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
-            //Asks to save a file on close
+            /**
+             * Asks to save a file on close
+             */
             public void windowClosing(WindowEvent e) {
                 //https://stackoverflow.com/questions/8689122/joptionpane-yes-no-options-confirm-dialog-box-issue
                 int saveButton = JOptionPane.YES_NO_OPTION;
@@ -46,7 +54,9 @@ public class View implements Observer {
                     }
                 }                
             }
-            //Asks to load a saved file on open
+            /**
+             * Asks to load a saved file on open
+             */
             public void windowOpened(WindowEvent e){
                 int loadButton = JOptionPane.YES_NO_OPTION;
 
@@ -73,6 +83,9 @@ public class View implements Observer {
         //Sets up the button that displays and removes the head of the queue
         pane.add(nextButton, BorderLayout.NORTH);
                  
+        /**
+         * Button to remove the head of the queue and update the display
+         */
         nextButton.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {
@@ -96,7 +109,10 @@ public class View implements Observer {
         
         //https://www.geeksforgeeks.org/jradiobutton-java-swing/
         //https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
-        // Adding Listener to JButton for adding alarms. 
+        /**
+         * Displays a pop-up letting users input hours, minutes, and seconds of the alarm
+         * Validates their entries and if all goes well adds the alarm to the queue
+         */ 
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {                
@@ -185,6 +201,9 @@ public class View implements Observer {
         button = new JButton("View Alarms");
         pane.add(button, BorderLayout.EAST);
         
+        /**
+         * Button to display all the alarms set
+         */
         button.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) 
             {                 
@@ -202,6 +221,11 @@ public class View implements Observer {
         frame.setVisible(true);
     }
     
+    /**
+     * Repaints the clock from ClockPanel
+     * @param o Observing model so that every time it updates (every 100 milliseconds) this function repaints the clock
+     * @param arg
+     */
     public void update(Observable o, Object arg) {
         panel.repaint();
     }

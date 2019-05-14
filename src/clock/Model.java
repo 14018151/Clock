@@ -14,19 +14,21 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Observable;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+/**
+ * Handles most of the functionality of the program.
+ * Also when model update view is observing it and repaints the clock with the time gathered from model
+ * @author 14018151 Joseph Kelly
+ */
 public class Model extends Observable {
     Alarms alarm = new Alarms();
     
@@ -36,10 +38,15 @@ public class Model extends Observable {
     
     int oldSecond = 0;
     
+    
     public Model() {
         update();
     }
     
+    /**
+     * Gets the current time to repaint the clock with. 
+     * Also checks the current time against the newest alarm and displays a popup if they match
+     */
     public void update() {
         Calendar date = Calendar.getInstance();
         hour = date.get(Calendar.HOUR_OF_DAY);
@@ -54,7 +61,9 @@ public class Model extends Observable {
             String minutesString = Integer.toString(minute);
             String secondsString = Integer.toString(second);
             
-            //Formats the current time so it can be checked properly
+            /**
+             * Formats the current time so it can be checked properly
+             */
             if (hoursString.length() < 2) {
                 hoursString = "0" + hoursString;
             }
@@ -67,7 +76,9 @@ public class Model extends Observable {
             
             String time = hoursString +":"+minutesString+":"+secondsString;
             
-            //Checks current time against head of queue - if they match display a popup declaring the alarm and remove the head of the queue.
+            /**
+             * Checks current time against head of queue - if they match display a pop-up declaring the alarm and remove the head of the queue.
+            */
             if(!alarm.isEmpty()){
                 if(alarm.head().equals(time)){
                     alarm.pop();
@@ -81,6 +92,10 @@ public class Model extends Observable {
         }
     }
     
+    /**
+    * Gives the head alarm in the queue
+    *  @return Head of the queue or a string saying there's nothing in the queue
+    */
     String nextAlarm() {
         if(!alarm.isEmpty()){
             return alarm.head();
@@ -89,27 +104,49 @@ public class Model extends Observable {
         }
     }
 
+    /**
+     * Takes the input string from either add function in the view class, or the edit and load functions in this one
+     * @param str The input string that will be added to the queue 
+     */
     void addAlarm(String str) {
         alarm.add(str);
     }
 
+    
+    /**
+     * Removes the first item in the queue
+     */
     void removeHead() {
         alarm.pop();
     }
     
+    /**
+     * 
+     * @return The complete to string of the alarm priority queue
+     */
     String printQueue(){
         return alarm.toString();
     }
     
+    /**
+     * Checks if the queue has any alarms in it or not
+     * @return True if alarm is empty. False if it has an item in it 
+     */
     boolean checkEmpty(){
         return alarm.isEmpty();
     }
     
-    
+    /**
+     * Gets rid of the given alarm
+     * @param str The item to be removed
+     */
     void removeAlarm(String str){
         alarm.remove(str);
     }
     
+    /**
+     * Brings up a display of all the alarms in the queue along with edit and delete buttons.   
+     */
     void viewAlarms(){
         //Makes sure there is actually at least one alarm set.
         if (checkEmpty()) {
@@ -122,7 +159,9 @@ public class Model extends Observable {
             
             final JPanel viewPanel = new JPanel();
             
-            //Setting the size of the panel - makes it wider when there are more than 10 alarms so they can be in two columns
+            /**
+             * Setting the size of the panel - makes it wider when there are more than 10 alarms so they can be in two columns
+             */
             int panelX = 210;
             int panelY = allAlarms.length * 35;
             
@@ -131,10 +170,10 @@ public class Model extends Observable {
                 panelY = allAlarms.length * 17;
             }
             
-            
             viewPanel.setPreferredSize(new Dimension(panelX, panelY));
             
-            //Displays each alarm alongside an edit and delte button
+            
+            //Displays each alarm alongside an edit and delete button
             for(int x = 0; x < allAlarms.length; x++){
                 final JTextField alarmEdit = new JTextField(8);
                 
@@ -147,6 +186,10 @@ public class Model extends Observable {
                 JButton editButton = new JButton("Edit");
                 viewPanel.add(editButton);
                 
+                /**
+                 * The functionality of the edit button.
+                 * Runs through validating the change before removing the old item and adding the edit
+                 */
                 editButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         String newAlarm = alarmEdit.getText();
@@ -263,6 +306,9 @@ public class Model extends Observable {
                 JButton delButton = new JButton("Delete");
                 viewPanel.add(delButton);
                 
+                /**
+                 * The button to remove a specified alarm in the panel displaying all alarms
+                 */
                 delButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         removeAlarm(alarm);
@@ -280,6 +326,10 @@ public class Model extends Observable {
         }
     }
     
+    /**
+     * Asks users choice then loads up a selected text file and adds the data into the queue as alarms if user wants to
+     * @throws FileNotFoundException if the user cancels or selects the wrong file
+     */
     public void load() throws FileNotFoundException {
         //Sets the file chooser to the user's home directory.
         JFileChooser fileChooser = new JFileChooser("FileSystemView.getFileSystemView().getHomeDirectory()");
@@ -351,6 +401,11 @@ public class Model extends Observable {
     
     //https://www.geeksforgeeks.org/java-swing-jfilechooser/
     //https://www.geeksforgeeks.org/file-handling-java-using-filewriter-filereader/
+
+    /**
+     * Asks to save alarms to a file and then do so if the users desires to
+     * @throws IOException
+     */
     public void save() throws IOException{
         // JFileChooser points to the mentioned path 
         JFileChooser fileChooser = new JFileChooser("FileSystemView.getFileSystemView().getHomeDirectory()");
