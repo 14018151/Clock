@@ -404,7 +404,7 @@ public class Model extends Observable {
 
     /**
      * Asks to save alarms to a file and then do so if the users desires to
-     * @throws IOException
+     * @throws IOException if the user cancels or there's an issue with writing the file
      */
     public void save() throws IOException{
         // JFileChooser points to the mentioned path 

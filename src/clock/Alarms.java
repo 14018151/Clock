@@ -2,8 +2,8 @@ package clock;
 
 import java.util.*;
 
+//https://www.geeksforgeeks.org/priority-queue-class-in-java-2/
 /**
- * https://www.geeksforgeeks.org/priority-queue-class-in-java-2/
  * @author 14018151 Joseph Kelly
  */
 public class Alarms {
