@@ -6,16 +6,28 @@ import java.awt.geom.*;
 import java.awt.font.*;
 import javax.swing.*;
 
+/**
+ *
+ * @author Graham
+ */
 public class ClockPanel extends JPanel {
     
     Model model;
     
+    /**
+     * Sets up the dimensions of the clock panel
+     * @param m sets the model object to the parameter value.
+     */
     public ClockPanel(Model m) {
         model = m;
         setPreferredSize(new Dimension(200, 200));
         setBackground(Color.white);
     }
     
+    /**
+     * Actually creates and draws the clock panel
+     * @param g
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
